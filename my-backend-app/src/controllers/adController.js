@@ -1,4 +1,4 @@
-import Ad from '../models/Ad.js';
+import Ad from '../models/ad.js';
 import cloudinary from '../config/cloudinary.js';
 
 export const createAd = async (req, res) => {
