@@ -1,0 +1,17 @@
+export const isAuthenticated = (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, error: 'Not authenticated' });
+  }
+
+  req.user = req.session.user; 
+  next();
+};
+
+export const hasRole = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({ success: false, error: `Access denied. Required roles: ${roles.join(', ')}` });
+    }
+    next();
+  };
+};
