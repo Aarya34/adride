@@ -5,6 +5,15 @@ export const isAuthenticated = (req, res, next) => {
     req.user = req.session.user;
     next();
   };
+
+  export const hasRole = (...roles) => {
+    return (req, res, next) => {
+      if (!req.user || !roles.includes(req.user.role)) {
+        return res.status(403).json({ success: false, error: `Access denied. Required roles: ${roles.join(', ')}` });
+      }
+      next();
+    };
+  };
   
   export const isAutowala = (req, res, next) => {
     if (!req.user || req.user.role !== 'Autowala/HelmetWala') {
