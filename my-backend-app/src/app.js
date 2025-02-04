@@ -30,13 +30,14 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,  
+      mongoUrl: process.env.MONGO_URI,  
       collectionName: 'sessions',
     }),
     cookie: {
-      secure: process.env.NODE_ENV === 'production',  
+      secure: process.env.NODE_ENV === 'production', 
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,  
+      sameSite: 'None', 
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   })
 );
