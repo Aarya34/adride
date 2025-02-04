@@ -50,6 +50,7 @@ export const getAllWallAds = async (req, res) => {
   }
 };
 
+
 export const getMyWallAds = async (req, res) => {
   try {
     const wallAds = await WallAd.find({ createdBy: req.user._id });
@@ -58,7 +59,6 @@ export const getMyWallAds = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 export const editWallAd = async (req, res) => {
   try {
     const { wallName, location, height, breadth, monthlyPrice, availableFrom, availableTo } = req.body;
@@ -80,27 +80,32 @@ export const editWallAd = async (req, res) => {
       });
 
       if (wallAd.imageUrl) {
-        const oldImageId = wallAd.imageUrl.split('/').pop().split('.')[0];
-        await cloudinary.uploader.destroy(`wallads/${oldImageId}`);
+        const oldImageUrlParts = wallAd.imageUrl.split('/');
+        const oldImagePublicId = `wallads/${oldImageUrlParts[oldImageUrlParts.length - 1].split('.')[0]}`;
+
+        console.log('Deleting old image from Cloudinary:', oldImagePublicId);
+        await cloudinary.uploader.destroy(oldImagePublicId);
       }
 
       wallAd.imageUrl = result.secure_url;
     }
 
-    wallAd.wallName = wallName || wallAd.wallName;
-    wallAd.location = location || wallAd.location;
-    wallAd.height = height || wallAd.height;
-    wallAd.breadth = breadth || wallAd.breadth;
-    wallAd.monthlyPrice = monthlyPrice || wallAd.monthlyPrice;
-    wallAd.availableFrom = availableFrom || wallAd.availableFrom;
-    wallAd.availableTo = availableTo || wallAd.availableTo;
+    wallAd.wallName = wallName ?? wallAd.wallName;
+    wallAd.location = location ?? wallAd.location;
+    wallAd.height = height ?? wallAd.height;
+    wallAd.breadth = breadth ?? wallAd.breadth;
+    wallAd.monthlyPrice = monthlyPrice ?? wallAd.monthlyPrice;
+    wallAd.availableFrom = availableFrom ?? wallAd.availableFrom;
+    wallAd.availableTo = availableTo ?? wallAd.availableTo;
 
     await wallAd.save();
     res.json({ success: true, message: 'Wall Ad updated successfully', wallAd });
   } catch (error) {
+    console.error('Error in editWallAd:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 export const deleteWallAd = async (req, res) => {
   try {
