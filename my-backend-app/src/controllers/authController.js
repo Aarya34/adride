@@ -33,27 +33,27 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ success: false, error: 'Invalid credentials' });
+      return res.status(400).json({ success: false, error: 'Invalid email or password' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ success: false, error: 'Invalid credentials' });
-    }
+    req.session.user = {
+      id: user._id,
+      role: user.role,
+      email: user.email,
+    };
 
-    req.session.user = user; 
-    res.json({ success: true, message: 'Login successful', user });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    res.status(200).json({ success: true, message: 'Login successful', user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 };
 
+
 export const logout = (req, res) => {
   req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ success: false, error: 'Logout failed' });
-    }
-    res.json({ success: true, message: 'Logged out successfully' });
+    if (err) return res.status(500).json({ success: false, error: 'Logout failed' });
+    res.clearCookie('connect.sid');
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
   });
 };
 

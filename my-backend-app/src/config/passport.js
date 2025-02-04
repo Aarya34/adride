@@ -2,10 +2,39 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
+import { Strategy as LocalStrategy } from 'passport-local';
 import User from '../models/User.js';
 import dotenv from 'dotenv';
 
 dotenv.config(); 
+
+passport.use(new LocalStrategy(
+  { usernameField: 'email' }, 
+  async (email, password, done) => {
+    try {
+      const user = await User.findOne({ email });
+      if (!user || !(await user.comparePassword(password))) {
+        return done(null, false, { message: 'Invalid email or password' });
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  }
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
