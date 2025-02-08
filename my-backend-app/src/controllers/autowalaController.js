@@ -1,6 +1,7 @@
 import Autowala from '../models/Autowala.js';
 import cloudinary from '../config/cloudinary.js';
 
+
 export const createAutowalaAd = async (req, res) => {
   try {
     const { registrationNumber } = req.body;
@@ -31,6 +32,7 @@ export const createAutowalaAd = async (req, res) => {
   }
 };
 
+
 export const getAllAutowalaAds = async (req, res) => {
   try {
     const ads = await Autowala.find().populate('createdBy', 'name email');
@@ -40,3 +42,64 @@ export const getAllAutowalaAds = async (req, res) => {
   }
 };
 
+
+export const editAutowalaAd = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { registrationNumber } = req.body;
+
+    let autowalaAd = await Autowala.findById(id);
+
+    if (!autowalaAd) {
+      return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    if (autowalaAd.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, error: 'Unauthorized to edit this ad' });
+    }
+
+    if (req.file) {
+      const oldImagePublicId = autowalaAd.imageUrl.split('/').pop().split('.')[0];
+      await cloudinary.uploader.destroy(`autowala/${oldImagePublicId}`);
+
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'autowala',
+        resource_type: 'image',
+      });
+
+      autowalaAd.imageUrl = result.secure_url;
+    }
+
+    autowalaAd.registrationNumber = registrationNumber || autowalaAd.registrationNumber;
+    await autowalaAd.save();
+
+    res.json({ success: true, message: 'Autowala Ad updated successfully', autowalaAd });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const deleteAutowalaAd = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const autowalaAd = await Autowala.findById(id);
+
+    if (!autowalaAd) {
+      return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    if (autowalaAd.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, error: 'Unauthorized to delete this ad' });
+    }
+
+    const publicId = autowalaAd.imageUrl.split('/').pop().split('.')[0];
+    await cloudinary.uploader.destroy(`autowala/${publicId}`);
+
+    await Autowala.deleteOne({ _id: id });
+
+    res.json({ success: true, message: 'Autowala Ad deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
