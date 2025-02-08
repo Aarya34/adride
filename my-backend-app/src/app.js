@@ -24,23 +24,27 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,  
+      mongoUrl: process.env.MONGODB_URI,
       collectionName: 'sessions',
     }),
     cookie: {
       secure: process.env.NODE_ENV === 'production', 
       httpOnly: true,
-      sameSite: 'None', 
+      sameSite: 'None',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   })
 );
+
 
 app.use(passport.initialize());
 app.use(passport.session());
