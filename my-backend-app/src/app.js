@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 import passport from 'passport';
@@ -25,15 +26,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
+      client: mongoose.connection.getClient(),
       collectionName: 'sessions',
     }),
     cookie: {
@@ -44,7 +43,6 @@ app.use(
     },
   })
 );
-
 
 app.use(passport.initialize());
 app.use(passport.session());
