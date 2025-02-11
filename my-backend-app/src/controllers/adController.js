@@ -27,7 +27,6 @@ export const createAd = async (req, res) => {
       description,
       imageUrl: result.secure_url,
       location,
-      createdBy: req.user._id,
     });
 
     await ad.save();
@@ -40,7 +39,7 @@ export const createAd = async (req, res) => {
 
 export const getAds = async (req, res) => {
   try {
-    const ads = await Ad.find().populate('createdBy', 'name email');
+    const ads = await Ad.find();
     res.json({ success: true, ads });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -49,7 +48,7 @@ export const getAds = async (req, res) => {
 
 export const getMyAds = async (req, res) => {
   try {
-    const ads = await Ad.find({ createdBy: req.user._id });
+    const ads = await Ad.find();  
     res.json({ success: true, ads });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -63,10 +62,6 @@ export const editAd = async (req, res) => {
 
     if (!ad) {
       return res.status(404).json({ success: false, error: 'Ad not found' });
-    }
-
-    if (String(ad.createdBy) !== String(req.user._id)) {
-      return res.status(403).json({ success: false, error: 'Unauthorized to edit this ad' });
     }
 
     if (req.file) {
@@ -101,10 +96,6 @@ export const deleteAd = async (req, res) => {
 
     if (!ad) {
       return res.status(404).json({ success: false, error: 'Ad not found' });
-    }
-
-    if (String(ad.createdBy) !== String(req.user._id)) {
-      return res.status(403).json({ success: false, error: 'Unauthorized to delete this ad' });
     }
 
     if (ad.imageUrl) {
