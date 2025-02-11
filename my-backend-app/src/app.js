@@ -8,7 +8,7 @@ import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
 import './config/passport.js';
 import { connectDB } from './config/database.js';
-import authRoutes from './routes/authRoutes.js';
+// import authRoutes from './routes/authRoutes.js';
 import adRoutes from './routes/adRoutes.js';
 import wallAdRoutes from './routes/wallAdRoutes.js';
 import autowalaRoutes from './routes/autowalaRoutes.js';
@@ -47,7 +47,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/auth', authRoutes);
+// app.use('/api/auth', authRoutes);
 app.use('/api/ads', adRoutes);
 app.use('/api/walls', wallAdRoutes);
 app.use('/api/autowala', autowalaRoutes);

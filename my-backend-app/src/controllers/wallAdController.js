@@ -30,7 +30,6 @@ export const createWallAd = async (req, res) => {
       monthlyPrice,
       availableFrom,
       availableTo,
-      createdBy: req.user._id,
     });
 
     await wallAd.save();
@@ -43,22 +42,22 @@ export const createWallAd = async (req, res) => {
 
 export const getAllWallAds = async (req, res) => {
   try {
-    const wallAds = await WallAd.find().populate('createdBy', 'name email');
+    const wallAds = await WallAd.find();
     res.json({ success: true, wallAds });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 
 export const getMyWallAds = async (req, res) => {
   try {
-    const wallAds = await WallAd.find({ createdBy: req.user._id });
+    const wallAds = await WallAd.find();
     res.json({ success: true, wallAds });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 export const editWallAd = async (req, res) => {
   try {
     const { wallName, location, height, breadth, monthlyPrice, availableFrom, availableTo } = req.body;
@@ -66,10 +65,6 @@ export const editWallAd = async (req, res) => {
 
     if (!wallAd) {
       return res.status(404).json({ success: false, error: 'Wall Ad not found' });
-    }
-
-    if (String(wallAd.createdBy) !== String(req.user._id)) {
-      return res.status(403).json({ success: false, error: 'Unauthorized to edit this Wall Ad' });
     }
 
     if (req.file) {
@@ -106,17 +101,12 @@ export const editWallAd = async (req, res) => {
   }
 };
 
-
 export const deleteWallAd = async (req, res) => {
   try {
     const wallAd = await WallAd.findById(req.params.id);
 
     if (!wallAd) {
       return res.status(404).json({ success: false, error: 'Wall Ad not found' });
-    }
-
-    if (String(wallAd.createdBy) !== String(req.user._id)) {
-      return res.status(403).json({ success: false, error: 'Unauthorized to delete this Wall Ad' });
     }
 
     if (wallAd.imageUrl) {
