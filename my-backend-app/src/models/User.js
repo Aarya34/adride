@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   role: { 
     type: String, 
-    enum: ['wallOwner', 'Autowala/HelmetWala', 'admin', 'advertiser'], 
+    enum: ['wallOwner', 'Autowala', 'HelmetWala', 'admin', 'advertiser'], 
     default: 'wallOwner' 
   },
   resetPasswordToken: String,
