@@ -6,6 +6,7 @@ export const createHelmetwalaAd = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'Image is required' });
     }
+
     console.log('Uploading image to Cloudinary...');
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'helmetwala',
@@ -16,7 +17,7 @@ export const createHelmetwalaAd = async (req, res) => {
 
     const helmetwalaAd = new Helmetwala({
       imageUrl: result.secure_url,
-      createdBy: req.user._id,
+      createdBy: req.user._id,  // JWT user ID
     });
 
     await helmetwalaAd.save();
@@ -27,7 +28,6 @@ export const createHelmetwalaAd = async (req, res) => {
   }
 };
 
-
 export const getAllHelmetwalaAds = async (req, res) => {
   try {
     const ads = await Helmetwala.find().populate('createdBy', 'name email');
@@ -36,7 +36,6 @@ export const getAllHelmetwalaAds = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 
 export const editHelmetwalaAd = async (req, res) => {
   try {
@@ -72,7 +71,6 @@ export const editHelmetwalaAd = async (req, res) => {
   }
 };
 
-
 export const deleteHelmetwalaAd = async (req, res) => {
   try {
     const { id } = req.params;
@@ -93,6 +91,20 @@ export const deleteHelmetwalaAd = async (req, res) => {
     await Helmetwala.deleteOne({ _id: id });
 
     res.json({ success: true, message: 'Helmetwala Ad deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getMyHelmetwalaAds = async (req, res) => {
+  try {
+    const ads = await Helmetwala.find({ createdBy: req.user._id }).populate('createdBy', 'name email');
+    
+    if (ads.length === 0) {
+      return res.status(404).json({ success: false, error: 'No ads found for this user' });
+    }
+
+    res.json({ success: true, ads });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

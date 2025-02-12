@@ -1,7 +1,6 @@
 import Autowala from '../models/Autowala.js';
 import cloudinary from '../config/cloudinary.js';
 
-
 export const createAutowalaAd = async (req, res) => {
   try {
     const { registrationNumber } = req.body;
@@ -9,7 +8,7 @@ export const createAutowalaAd = async (req, res) => {
     if (!registrationNumber || !req.file) {
       return res.status(400).json({ success: false, error: 'All fields are required' });
     }
-    
+
     console.log('Uploading image to Cloudinary...');
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'autowala',
@@ -21,7 +20,7 @@ export const createAutowalaAd = async (req, res) => {
     const autowalaAd = new Autowala({
       registrationNumber,
       imageUrl: result.secure_url,
-      createdBy: req.user._id,
+      createdBy: req.user._id, 
     });
 
     await autowalaAd.save();
@@ -31,7 +30,6 @@ export const createAutowalaAd = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 
 export const getAllAutowalaAds = async (req, res) => {
   try {
@@ -53,7 +51,6 @@ export const getMyAutowalaAds = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 
 export const editAutowalaAd = async (req, res) => {
   try {
