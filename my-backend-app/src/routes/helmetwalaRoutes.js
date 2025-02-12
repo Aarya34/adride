@@ -11,7 +11,6 @@ router.get('/', getAllHelmetwalaAds);
 
 router.get('/my-helmet', isAuthenticated, getMyHelmetwalaAds);
 
-
 router.put('/edit/:id', isAuthenticated, isHelmetwala, upload.single('image'), editHelmetwalaAd);
 
 router.delete('/delete/:id', isAuthenticated, isHelmetwala, deleteHelmetwalaAd);

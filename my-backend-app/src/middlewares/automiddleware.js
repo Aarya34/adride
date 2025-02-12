@@ -38,15 +38,21 @@ export const hasRole = (...roles) => {
 };
 
 export const isAutowala = (req, res, next) => {
-  if (!req.user || (req.user.role !== 'Autowala' && req.user.role !== 'Helmetwala')) {
-    return res.status(403).json({ success: false, error: 'Access denied. Required role: Autowala or Helmetwala' });
+  if (!req.user || !(req.user.role === 'Autowala' || req.user.role === 'HelmetWala')) {
+    return res.status(403).json({
+      success: false,
+      error: 'Access denied. Required role: Autowala or HelmetWala'
+    });
   }
   next();
 };
 
 export const isHelmetwala = (req, res, next) => {
-  if (!req.user || req.user.role !== 'Helmetwala') {
-    return res.status(403).json({ success: false, error: 'Access denied. Required role: Helmetwala' });
+  if (!req.user || req.user.role !== 'HelmetWala') {
+    return res.status(403).json({
+      success: false,
+      error: 'Access denied. Required role: HelmetWala'
+    });
   }
   next();
 };
