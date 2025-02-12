@@ -42,6 +42,18 @@ export const getAllAutowalaAds = async (req, res) => {
   }
 };
 
+export const getMyAutowalaAds = async (req, res) => {
+  try {
+    const ads = await Autowala.find({ createdBy: req.user._id }).populate('createdBy', 'name email');
+    if (ads.length === 0) {
+      return res.status(404).json({ success: false, error: 'No ads found for this user' });
+    }
+    res.json({ success: true, ads });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 
 export const editAutowalaAd = async (req, res) => {
   try {
