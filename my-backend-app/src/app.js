@@ -22,7 +22,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: true, 
+    origin: process.env.NODE_ENV === 'production' ? 'https://adride-axz8.onrender.com' : 'http://localhost:3000',
     credentials: true, 
   })
 );
