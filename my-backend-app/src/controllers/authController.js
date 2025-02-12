@@ -48,12 +48,23 @@ export const login = async (req, res) => {
     req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
 
     req.session.save(() => {
+      res.cookie('s.id', req.sessionID, {
+        httpOnly: true,
+        secure: true, 
+        sameSite: 'Lax'
+      });
+
       res.status(200).json({ success: true, message: 'Login successful', user: req.session.user });
     });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 };
+
+
+
+
+
 
 export const logout = (req, res) => {
   req.session.destroy((err) => {
