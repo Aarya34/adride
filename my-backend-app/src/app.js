@@ -4,7 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import passport from 'passport';
 import session from 'express-session';
-import MongoStore from 'connect-mongo';
+import MongoStore from 'connect-mongo'; 
 import dotenv from 'dotenv';
 import './config/passport.js';
 import { connectDB } from './config/database.js';
@@ -20,16 +20,11 @@ connectDB();
 
 const app = express();
 
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
-
+app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 app.use(
   session({
@@ -37,14 +32,14 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
+      client: mongoose.connection.getClient(),
       collectionName: 'sessions',
     }),
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
+      secure: process.env.NODE_ENV === 'production', 
       httpOnly: true,
-      sameSite: 'Lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   })
 );
