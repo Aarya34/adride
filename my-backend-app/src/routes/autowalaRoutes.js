@@ -1,6 +1,6 @@
 import express from 'express';
 import { isAuthenticated, isAutowala } from '../middlewares/automiddleware.js';
-import { createAutowalaAd, getAllAutowalaAds,getMyAutowalaAds, editAutowalaAd, deleteAutowalaAd, getMyAutowalaAds } from '../controllers/autowalaController.js';
+import { createAutowalaAd, getAllAutowalaAds,getMyAutowalaAds, editAutowalaAd, deleteAutowalaAd} from '../controllers/autowalaController.js';
 import upload from '../middlewares/upload.js';
 
 const router = express.Router();
