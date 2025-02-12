@@ -142,61 +142,57 @@ export const googleAuth = (req, res, next) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production", // Set to true in production
       sameSite: "None",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.status(200).json({ success: true, message: "Google login successful", user });
   })(req, res, next);
 };
 
+export const facebookAuth = (req, res, next) => {
+  passport.authenticate("facebook", { failureRedirect: "/login" }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({ success: false, error: "Authentication failed" });
+    }
 
-// Facebook Authentication (Updated)
-// export const facebookAuth = (req, res, next) => {
-//   passport.authenticate("facebook", { failureRedirect: "/login" }, (err, user) => {
-//     if (err || !user) return res.status(400).json({ success: false, error: "Authentication failed" });
+    const token = jwt.sign(
+      { _id: user._id, name: user.name, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-//     const token = generateToken(user);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
-//     res
-//       .cookie("token", token, {
-//         httpOnly: true,
-//         secure: process.env.NODE_ENV === "production",
-//         sameSite: "None",
-//         maxAge: 7 * 24 * 60 * 60 * 1000,
-//       })
-//       .status(200)
-//       .json({ success: true, message: "Facebook login successful", user });
-//   })(req, res, next);
-// };
-
-// Twitter Authentication (Updated)
-// export const twitterAuth = (req, res, next) => {
-//   passport.authenticate("twitter", { failureRedirect: "/login" }, (err, user) => {
-//     if (err || !user) return res.status(400).json({ success: false, error: "Authentication failed" });
-
-//     const token = generateToken(user);
-
-//     res
-//       .cookie("token", token, {
-//         httpOnly: true,
-//         secure: process.env.NODE_ENV === "production",
-//         sameSite: "None",
-//         maxAge: 7 * 24 * 60 * 60 * 1000,
-//       })
-//       .status(200)
-//       .json({ success: true, message: "Twitter login successful", user });
-//   })(req, res, next);
-// };
-
-// Global Error Handling Middleware
-export const errorHandler = (err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
+    res.status(200).json({ success: true, message: "Facebook login successful", user });
+  })(req, res, next);
 };
 
-// Handle Undefined Routes
-export const notFound = (req, res) => {
-  res.status(404).json({ error: "Route not found" });
+export const twitterAuth = (req, res, next) => {
+  passport.authenticate("twitter", { failureRedirect: "/login" }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({ success: false, error: "Authentication failed" });
+    }
+
+    const token = jwt.sign(
+      { _id: user._id, name: user.name, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(200).json({ success: true, message: "Twitter login successful", user });
+  })(req, res, next);
 };
