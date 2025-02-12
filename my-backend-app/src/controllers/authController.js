@@ -62,10 +62,6 @@ export const login = async (req, res) => {
 };
 
 
-
-
-
-
 export const logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
