@@ -1,12 +1,12 @@
 import Helmetwala from '../models/Helmetwala.js';
 import cloudinary from '../config/cloudinary.js';
 
+
 export const createHelmetwalaAd = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'Image is required' });
     }
-    
     console.log('Uploading image to Cloudinary...');
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'helmetwala',
@@ -17,6 +17,7 @@ export const createHelmetwalaAd = async (req, res) => {
 
     const helmetwalaAd = new Helmetwala({
       imageUrl: result.secure_url,
+      createdBy: req.user._id,
     });
 
     await helmetwalaAd.save();
@@ -27,14 +28,16 @@ export const createHelmetwalaAd = async (req, res) => {
   }
 };
 
+
 export const getAllHelmetwalaAds = async (req, res) => {
   try {
-    const ads = await Helmetwala.find();
+    const ads = await Helmetwala.find().populate('createdBy', 'name email');
     res.json({ success: true, ads });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 export const editHelmetwalaAd = async (req, res) => {
   try {
@@ -44,6 +47,10 @@ export const editHelmetwalaAd = async (req, res) => {
 
     if (!helmetwalaAd) {
       return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    if (helmetwalaAd.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, error: 'Unauthorized to edit this ad' });
     }
 
     if (req.file) {
@@ -66,6 +73,7 @@ export const editHelmetwalaAd = async (req, res) => {
   }
 };
 
+
 export const deleteHelmetwalaAd = async (req, res) => {
   try {
     const { id } = req.params;
@@ -74,6 +82,10 @@ export const deleteHelmetwalaAd = async (req, res) => {
 
     if (!helmetwalaAd) {
       return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    if (helmetwalaAd.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, error: 'Unauthorized to delete this ad' });
     }
 
     const publicId = helmetwalaAd.imageUrl.split('/').pop().split('.')[0];

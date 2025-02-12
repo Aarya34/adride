@@ -1,6 +1,7 @@
 import Autowala from '../models/Autowala.js';
 import cloudinary from '../config/cloudinary.js';
 
+
 export const createAutowalaAd = async (req, res) => {
   try {
     const { registrationNumber } = req.body;
@@ -20,6 +21,7 @@ export const createAutowalaAd = async (req, res) => {
     const autowalaAd = new Autowala({
       registrationNumber,
       imageUrl: result.secure_url,
+      createdBy: req.user._id,
     });
 
     await autowalaAd.save();
@@ -30,14 +32,16 @@ export const createAutowalaAd = async (req, res) => {
   }
 };
 
+
 export const getAllAutowalaAds = async (req, res) => {
   try {
-    const ads = await Autowala.find();
+    const ads = await Autowala.find().populate('createdBy', 'name email');
     res.json({ success: true, ads });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 export const editAutowalaAd = async (req, res) => {
   try {
@@ -48,6 +52,10 @@ export const editAutowalaAd = async (req, res) => {
 
     if (!autowalaAd) {
       return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    if (autowalaAd.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, error: 'Unauthorized to edit this ad' });
     }
 
     if (req.file) {
@@ -79,6 +87,10 @@ export const deleteAutowalaAd = async (req, res) => {
 
     if (!autowalaAd) {
       return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    if (autowalaAd.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, error: 'Unauthorized to delete this ad' });
     }
 
     const publicId = autowalaAd.imageUrl.split('/').pop().split('.')[0];

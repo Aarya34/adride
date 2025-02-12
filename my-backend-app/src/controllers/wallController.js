@@ -81,7 +81,7 @@ export const editWallAd = async (req, res) => {
 
       if (wallAd.imageUrl) {
         const oldImageUrlParts = wallAd.imageUrl.split('/');
-        const oldImagePublicId = `wallads/${oldImageUrlParts[oldImageUrlParts.length - 1].split('.')[0]}`;
+        const oldImagePublicId = wallads/${oldImageUrlParts[oldImageUrlParts.length - 1].split('.')[0]};
 
         console.log('Deleting old image from Cloudinary:', oldImagePublicId);
         await cloudinary.uploader.destroy(oldImagePublicId);
@@ -121,7 +121,7 @@ export const deleteWallAd = async (req, res) => {
 
     if (wallAd.imageUrl) {
       const oldImageId = wallAd.imageUrl.split('/').pop().split('.')[0];
-      await cloudinary.uploader.destroy(`wallads/${oldImageId}`);
+      await cloudinary.uploader.destroy(wallads/${oldImageId});
     }
 
     await wallAd.deleteOne();
