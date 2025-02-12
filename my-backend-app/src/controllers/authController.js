@@ -84,6 +84,38 @@ export const logout = (req, res) => {
     .json({ success: true, message: "Logged out successfully" });
 };
 
+export const editProfile = async (req, res) => {
+  try {
+    const { email, phone } = req.body;
+    const userId = req.user._id; 
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    if (email) {
+      user.email = email;
+    }
+
+    if (phone) {
+      user.phone = phone;
+    }
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: { _id: user._id, name: user.name, email: user.email, phone: user.phone },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
