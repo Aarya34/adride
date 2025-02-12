@@ -1,7 +1,6 @@
 import Helmetwala from '../models/Helmetwala.js';
 import cloudinary from '../config/cloudinary.js';
 
-
 export const createHelmetwalaAd = async (req, res) => {
   try {
     if (!req.file) {

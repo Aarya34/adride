@@ -1,8 +1,7 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
-import { generateTokens } from '../utils/jwt.js';
-import passport from 'passport';
 import { sendResetEmail } from '../utils/email.js';
+import passport from 'passport';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -17,11 +16,16 @@ export const register = async (req, res) => {
       return res.status(400).json({ success: false, error: 'User already exists' });
     }
 
-    const user = new User({ name, email, password, phone, role });
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const user = new User({ name, email, password: hashedPassword, phone, role });
     await user.save();
 
-    req.session.user = user; 
-    res.status(201).json({ success: true, message: 'Registration successful', user });
+    req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
+
+    req.session.save(() => {
+      res.status(201).json({ success: true, message: 'Registration successful', user: req.session.user });
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -36,23 +40,27 @@ export const login = async (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid email or password' });
     }
 
-    req.session.user = {
-      id: user._id,
-      role: user.role,
-      email: user.email,
-    };
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, error: 'Invalid email or password' });
+    }
 
-    res.status(200).json({ success: true, message: 'Login successful', user: req.session.user });
+    req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
+
+    req.session.save(() => {
+      res.status(200).json({ success: true, message: 'Login successful', user: req.session.user });
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 };
 
-
 export const logout = (req, res) => {
   req.session.destroy((err) => {
-    if (err) return res.status(500).json({ success: false, error: 'Logout failed' });
-    res.clearCookie('connect.sid');
+    if (err) {
+      return res.status(500).json({ success: false, error: 'Logout failed' });
+    }
+    res.clearCookie('connect.sid', { path: '/' });
     res.status(200).json({ success: true, message: 'Logged out successfully' });
   });
 };
@@ -75,7 +83,7 @@ export const forgotPassword = async (req, res) => {
 
     const resetToken = crypto.randomBytes(32).toString('hex'); 
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; 
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour expiration
     await user.save();
 
     const emailResponse = await sendResetEmail(user.email, resetToken);
@@ -114,41 +122,58 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-
+// Google Authentication
 export const googleAuth = (req, res) => {
-  passport.authenticate('google', { failureRedirect: '/login' }, async (err, user) => {
-    if (err || !user) return res.status(400).json({ error: 'Authentication failed' });
+  passport.authenticate('google', { failureRedirect: '/login' }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({ success: false, error: 'Authentication failed' });
+    }
 
-    const tokens = generateTokens(user);
-    res.status(200).json(tokens);
+    req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
+
+    req.session.save(() => {
+      res.status(200).json({ success: true, message: 'Google login successful', user: req.session.user });
+    });
   })(req, res);
 };
 
+// Facebook Authentication
 export const facebookAuth = (req, res) => {
-  passport.authenticate('facebook', { failureRedirect: '/login' }, async (err, user) => {
-    if (err || !user) return res.status(400).json({ error: 'Authentication failed' });
+  passport.authenticate('facebook', { failureRedirect: '/login' }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({ success: false, error: 'Authentication failed' });
+    }
 
-    const tokens = generateTokens(user);
-    res.status(200).json(tokens);
+    req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
+
+    req.session.save(() => {
+      res.status(200).json({ success: true, message: 'Facebook login successful', user: req.session.user });
+    });
   })(req, res);
 };
 
+// Twitter Authentication
 export const twitterAuth = (req, res) => {
-  passport.authenticate('twitter', { failureRedirect: '/login' }, async (err, user) => {
-    if (err || !user) return res.status(400).json({ error: 'Authentication failed' });
+  passport.authenticate('twitter', { failureRedirect: '/login' }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({ success: false, error: 'Authentication failed' });
+    }
 
-    const tokens = generateTokens(user);
-    res.status(200).json(tokens);
+    req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
+
+    req.session.save(() => {
+      res.status(200).json({ success: true, message: 'Twitter login successful', user: req.session.user });
+    });
   })(req, res);
 };
 
+// Global Error Handling
 export const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 };
 
+// Handle Undefined Routes
 export const notFound = (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 };
-
-
