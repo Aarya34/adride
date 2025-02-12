@@ -22,8 +22,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' ? 'https://adride-axz8.onrender.com' : 'http://localhost:3000',
-    credentials: true, 
+    origin: true,
+    credentials: true,
   })
 );
 
@@ -41,9 +41,9 @@ app.use(
       collectionName: 'sessions',
     }),
     cookie: {
-      secure: true,
+      secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
       httpOnly: true,
-      sameSite: 'None',
+      sameSite: 'Lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     },
   })
