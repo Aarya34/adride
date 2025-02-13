@@ -1,6 +1,7 @@
 import express from 'express';
 import { isAuthenticated, isHelmetwala } from '../middlewares/automiddleware.js';
-import { createHelmetwalaAd, getAllHelmetwalaAds, getMyHelmetwalaAds, editHelmetwalaAd, deleteHelmetwalaAd } from '../controllers/helmetwalaController.js';
+import { isAdmin } from '../middlewares/adminMiddleware.js';
+import { createHelmetwalaAd, getAllHelmetwalaAds, getMyHelmetwalaAds, editHelmetwalaAd, deleteHelmetwalaAd,changeHelmetwalaAdStatus  } from '../controllers/helmetwalaController.js';
 import upload from '../middlewares/upload.js';
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get('/my-helmet', isAuthenticated, getMyHelmetwalaAds);
 router.put('/edit/:id', isAuthenticated, isHelmetwala, upload.single('image'), editHelmetwalaAd);
 
 router.delete('/delete/:id', isAuthenticated, isHelmetwala, deleteHelmetwalaAd);
+router.put('/change-status/:id', isAuthenticated,isAdmin ,changeHelmetwalaAdStatus );
 
 export default router;

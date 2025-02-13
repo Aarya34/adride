@@ -118,3 +118,20 @@ export const deleteAd = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+export const changeAdStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const ad = await Ad.findByIdAndUpdate(id, { status }, { new: true });
+
+    if (!ad) {
+      return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Status updated successfully', ad });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

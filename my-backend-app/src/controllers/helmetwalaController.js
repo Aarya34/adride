@@ -109,3 +109,20 @@ export const getMyHelmetwalaAds = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+export const changeHelmetwalaAdStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const helmetwalaAd = await Helmetwala.findByIdAndUpdate(id, { status }, { new: true });
+
+    if (!helmetwalaAd) {
+      return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Status updated successfully', helmetwalaAd });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

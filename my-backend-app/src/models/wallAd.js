@@ -10,6 +10,7 @@ const wallAdSchema = new mongoose.Schema({
   availableFrom: { type: Date, required: true },
   availableTo: { type: Date, required: true },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+  status: { type: String, default: 'pending' }
 },{ timestamps: true });
 
 export default mongoose.model('WallAd', wallAdSchema);

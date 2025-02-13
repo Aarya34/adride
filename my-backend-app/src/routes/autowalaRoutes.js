@@ -1,6 +1,7 @@
 import express from 'express';
 import { isAuthenticated, isAutowala } from '../middlewares/automiddleware.js';
-import { createAutowalaAd, getAllAutowalaAds,getMyAutowalaAds, editAutowalaAd, deleteAutowalaAd} from '../controllers/autowalaController.js';
+import { createAutowalaAd, getAllAutowalaAds,getMyAutowalaAds, editAutowalaAd, deleteAutowalaAd,changeAutowalaAdStatus} from '../controllers/autowalaController.js';
+import { isAdmin } from '../middlewares/adminMiddleware.js';
 import upload from '../middlewares/upload.js';
 
 const router = express.Router();
@@ -10,6 +11,7 @@ router.get('/', getAllAutowalaAds);
 router.get('/my-auto', isAuthenticated, getMyAutowalaAds);
 router.put('/edit/:id', isAuthenticated, isAutowala, upload.single('image'), editAutowalaAd);
 router.delete('/delete/:id', isAuthenticated, isAutowala, deleteAutowalaAd);
+router.put('/change-status/:id',changeAutowalaAdStatus);
 
 
 export default router;
