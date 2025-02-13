@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Ad from "./models/ad.js"; // Adjust path if necessary
 import wallAd from "./models/wallAd.js";
 import autowala from "./models/Autowala.js";
+import User from "./models/User.js";
 import helmetwala from "./models/Helmetwala.js";
 
 dotenv.config(); // Load environment variables
@@ -39,6 +40,11 @@ async function updateExistingAds() {
         { status: { $exists: false } },
         { $set: { status: "pending" } }
       );
+      const result4 = await User.updateMany(
+        { status: { $exists: false } },
+        { $set: { status: "pending" } }
+      );
+      
       
     console.log(`✅ Updated ${result.modifiedCount} documents.`);
 

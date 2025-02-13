@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+  status: { type: String, default: 'pending' }
 });
 
 userSchema.pre('save', async function (next) {

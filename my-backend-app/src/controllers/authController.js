@@ -228,3 +228,43 @@ export const twitterAuth = (req, res, next) => {
     res.status(200).json({ success: true, message: "Twitter login successful", user });
   })(req, res, next);
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const changeUserStatusActive = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    user.status = "active";
+    await user.save();
+    res.json({ success: true, message: "User status changed to active" });
+  }
+  catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+export const changeUserStatusInactive = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    user.status = "suspended";
+    await user.save();
+    res.json({ success: true, message: "User status changed to inactive" });
+  }
+  catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+

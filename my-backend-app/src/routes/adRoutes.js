@@ -15,6 +15,6 @@ router.get('/my-ads', isAuthenticated, hasRole('advertiser'), getMyAds);
 router.put('/edit/:id', isAuthenticated, hasRole('advertiser'), upload.single('image'), editAd);
 
 router.delete('/delete/:id', isAuthenticated, hasRole('advertiser'), deleteAd);
-router.put('/change-status/:id',changeAdStatus);
+router.put('/change-status/:id',isAuthenticated,isAdmin,changeAdStatus);
 
 export default router;

@@ -11,7 +11,7 @@ router.get('/', getAllAutowalaAds);
 router.get('/my-auto', isAuthenticated, getMyAutowalaAds);
 router.put('/edit/:id', isAuthenticated, isAutowala, upload.single('image'), editAutowalaAd);
 router.delete('/delete/:id', isAuthenticated, isAutowala, deleteAutowalaAd);
-router.put('/change-status/:id',changeAutowalaAdStatus);
+router.put('/change-status/:id',isAuthenticated,isAdmin,changeAutowalaAdStatus);
 
 
 export default router;

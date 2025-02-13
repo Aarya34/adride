@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
 import dotenv from 'dotenv';
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import './config/passport.js';
 import { connectDB } from './config/database.js';
@@ -16,6 +17,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.use(cors());
 
 app.use(morgan('dev'));
 app.use(express.json());
