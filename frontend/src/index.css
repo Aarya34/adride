@@ -9,7 +9,7 @@ body {
 /* Navbar */
 .navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* Aligns brand and menu icon */
   align-items: center;
   background: white;
   padding: 15px 30px;
@@ -18,13 +18,21 @@ body {
   width: 100%;
 }
 
-/* Brand Logo */
+/* Brand */
 .navbar-brand {
-  position: absolute;
-  left: 20px;
   font-size: 22px;
   font-weight: bold;
   color: black;
+}
+
+/* Menu Icon */
+.menu-icon {
+  display: none; /* Hidden by default */
+  background: none;
+  border: none;
+  color: black;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 /* Navigation Links */
@@ -46,6 +54,40 @@ body {
   font-size: 16px;
   font-weight: bold;
   transition: 0.3s ease-in-out;
+}
+
+.nav-links a:hover {
+  background: #ffd700;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block; /* Show menu icon on small screens */
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background: #fdfae5;
+    border-radius: 10px;
+    width: 200px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 10px 15px;
+    font-size: 14px;
+    text-align: center;
+  }
 }
 
 .nav-links a:hover {
