@@ -119,18 +119,33 @@ export const deleteAd = async (req, res) => {
   }
 };
 
-export const changeAdStatus = async (req, res) => {
+export const approveAd = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    const ad = await Ad.findByIdAndUpdate(id, { status }, { new: true });
+    const ad = await Ad.findById(req.params.id);
 
     if (!ad) {
       return res.status(404).json({ success: false, error: 'Ad not found' });
     }
 
-    res.status(200).json({ success: true, message: 'Status updated successfully', ad });
+    ad.status = 'approved';
+    await ad.save();
+    res.json({ success: true, message: 'Ad approved successfully', ad });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const rejectAd = async (req, res) => {
+  try {
+    const ad = await Ad.findById(req.params.id);
+
+    if (!ad) {
+      return res.status(404).json({ success: false, error: 'Ad not found' });
+    }
+
+    ad.status = 'rejected';
+    await ad.save();
+    res.json({ success: true, message: 'Ad rejected successfully', ad });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

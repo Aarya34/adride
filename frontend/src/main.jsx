@@ -5,14 +5,21 @@ import './assets/styles/bootstrap.custom.css'
 import {Provider} from 'react-redux'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from 'react-router-dom'
 import ManageUsersScreen from './screens/ManageUsersScreen'
+import NewAdsScreen from './screens/NewAdsScreen'
+import DashboardScreen from './screens/DashboardScreen'
+import AnalyticsScreen from './screens/AnalyticsScreen'
 import store from './store'
+import './index.css'
 import App from './App.jsx'
 
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
+      <Route  path="dashboard" element={<DashboardScreen />} />
       <Route  path="manage" element={<ManageUsersScreen />} />
+      <Route  path="ads" element={<NewAdsScreen />} />
+      <Route  path="analytics" element={<AnalyticsScreen />} />
     </Route>
   )
 )
