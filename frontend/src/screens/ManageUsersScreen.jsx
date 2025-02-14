@@ -93,7 +93,7 @@ const ManageUsersScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant='danger'>{error}</Message>
+        <div>{error}</div>
       ) : (
         <Table striped hover responsive className='table-sm'>
           <thead style={{ backgroundColor: '#f8f9fa' }}>
