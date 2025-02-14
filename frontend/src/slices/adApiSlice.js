@@ -1,4 +1,3 @@
-'/api/ads'
 
 import {apiSlice} from './apiSlice';
 import {ADS_URL} from '../constants';
