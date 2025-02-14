@@ -33,6 +33,8 @@ body {
   color: black;
   font-size: 24px;
   cursor: pointer;
+  position: absolute;
+  right: 20px;
 }
 
 /* Navigation Links */
@@ -40,16 +42,31 @@ body {
   display: flex;
   gap: 20px;
   background: #fdfae5;
+  align-items: center;
+  /* display: inline-block; */
+  text-align: center;
   padding: 10px 20px;
   border-radius: 30px;
   transition: all 0.3s ease-in-out;
 }
 
+/* Center links */
+.nav-container {
+  display: flex;
+  justify-content: center; 
+  text-align: center; /* Center links horizontally */
+  width: 93%;
+  /* width: 100%; */
+}
+
+/* Links */
 .nav-links a {
   text-decoration: none;
   padding: 12px 20px;
   background: #ffed98;
+  align-items: center;
   color: black;
+  text-align: center;
   border-radius: 25px;
   font-size: 16px;
   font-weight: bold;
@@ -62,20 +79,32 @@ body {
 
 /* Responsive Navbar */
 @media (max-width: 768px) {
+  .navbar {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+
+  .navbar-brand {
+    position: static;
+    margin-bottom: 0;
+  }
+
   .menu-icon {
-    display: block; /* Show menu icon on small screens */
+    display: block;
   }
 
   .nav-links {
     display: none;
     flex-direction: column;
+    gap: 10px;
+    padding: 10px;
     position: absolute;
     top: 60px;
     right: 10px;
     background: #fdfae5;
     border-radius: 10px;
     width: 200px;
-    padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
@@ -89,6 +118,7 @@ body {
     text-align: center;
   }
 }
+
 
 .nav-links a:hover {
   background: #ffd700;
