@@ -8,6 +8,7 @@ import ManageUsersScreen from './screens/ManageUsersScreen'
 import NewAdsScreen from './screens/NewAdsScreen'
 import DashboardScreen from './screens/DashboardScreen'
 import AnalyticsScreen from './screens/AnalyticsScreen'
+import AdDetailsScreen from './screens/AdDetailsScreen.jsx'
 import store from './store'
 import './index.css'
 import App from './App.jsx'
@@ -20,6 +21,7 @@ const routes = createBrowserRouter(
       <Route  path="manage" element={<ManageUsersScreen />} />
       <Route  path="ads" element={<NewAdsScreen />} />
       <Route  path="analytics" element={<AnalyticsScreen />} />
+      <Route path="/ad-details/:id" element={<AdDetailsScreen />} />
     </Route>
   )
 )

@@ -37,7 +37,7 @@ const NewAdsScreen = () => {
     const { data: autos, error: autoEr,isLoading: autoLoad } = useGetAutosQuery();
     const { data: helmets, error: helmetEr,isLoading: helmetLoad } = useGetHelmetsQuery();
     const wallAds = walls?.wallAds || [];
-    console.log(walls);
+    // console.log(walls);
 
     return (
         <>

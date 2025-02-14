@@ -9,7 +9,13 @@ export const wallApiSlice = apiSlice.injectEndpoints({
             }),
             keepUnusedDataFor: 5,
         }),
+        getWallsById: builder.query({
+            query: (id) => ({
+                url : `${WALLS_URL}/${id}`,
+            }),
+            keepUnusedDataFor: 5,
+        }),
     })
 });
 
-export const {useGetWallsQuery} = wallApiSlice;
+export const {useGetWallsQuery,useGetWallsByIdQuery} = wallApiSlice;

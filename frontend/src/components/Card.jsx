@@ -11,14 +11,14 @@ const Carder = ({ ads }) => {
     <Card className='my-3 p-3 rounded'>
       <Row>
         <Col md={5}>
-          <Link to={`/ads`}>
+        <Link to={`/ad-details/${ads._id}`}>
             <Card.Img src= {ads.imageUrl}  variant='top' 
               style={{ height: '150px', objectFit: 'cover' }}  />
           </Link>
         </Col>
         <Col md={7}>
           <Card.Body>
-            <Link to={`/ads`} style={{ textDecoration: 'none' }}>
+          <Link to={`/ad-details/${ads._id}`} style={{ textDecoration: 'none' }}>
               <Card.Title as='div' className='ads-title'>
                 <strong>{displayName}</strong>
               </Card.Title>
@@ -29,7 +29,7 @@ const Carder = ({ ads }) => {
            
           </Card.Body>
         </Col>
-        <Button variant='primary' className='w-100 mt-3' as={Link} to={`/ads`} style={{ backgroundColor: 'black' }}>
+        <Button variant='primary' className='w-100 mt-3' as={Link} to={`/ad-details/${ads._id}`} style={{ backgroundColor: 'black' }}>
               View Details
             </Button>
       </Row>

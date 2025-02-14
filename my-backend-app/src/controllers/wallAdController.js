@@ -148,3 +148,12 @@ export const changeWallAdStatus = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+export const getAllWallById = async (req, res) => {
+  try {
+    const wallAd = await WallAd.findById(req.params.id);
+    res.json({ success: true, wallAd });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
